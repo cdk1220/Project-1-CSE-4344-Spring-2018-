@@ -9,7 +9,6 @@ ID  : #1001 101 220
 import sys
 import http.client
 
-
 # -------------------------------------------------------------
 # This class implements requirements in the project description
 # -------------------------------------------------------------
@@ -20,8 +19,9 @@ class ProjectRequirements():
     
     # This function checks to see if the user provided the script with args
     def initiation(self):
+        
         # Check for how many args user has provided, and check for their validity
-        if len(sys.argv) == 4:
+        if len(sys.argv) >= 4:
             self.check_server_name(sys.argv[1])
             self.check_port_number(sys.argv[2])
             self.check_file(sys.argv[3])
@@ -41,42 +41,89 @@ class ProjectRequirements():
         if name == 'localhost' or name == '127.0.0.1':
             self.SERVER = name
         else:
-            print("Server name provided is not localserver or 127.0.0.1. Using local server by default.\n")
+            print("Server name provided is not localhost or 127.0.0.1. Using local server by default.\n")
 
-    # Checks to see if user has given a valid port number
-    def check_port_number(self, port):
-        # Try to convert given value for port number to an integer
-        try:
-            self.PORT = int(sys.argv[2])
-            except:
-                print("Given port number not acceptable. Using port 8080\n")
-                    
-                    # Assigns the path given by the user
-                    def check_file(self, file):
-                        self.FILE = file
+# Checks to see if user has given a valid port number
+def check_port_number(self, port):
+    
+    # Try to convert given value for port number to an integer
+    try:
+        self.PORT = int(sys.argv[2])
+        except:
+            print("Given port number not acceptable. Using port 8080\n")
+                
+                # Assigns the path given by the user
+                def check_file(self, file):
+                    self.FILE = file
 
 
 # -----------------------------------------------------------------------
 # Creates an http client that listens to given port number on localserver
 # -----------------------------------------------------------------------
 class HttpClient():
+    
     # Following method instantiates the class
     def __init__(self, server_name, port_number, file_name):
         self.server = server_name
         self.port = port_number
         self.file = file_name
     
-    # Following method creates the http request
+    # Following method creates the http request, sends it, and displays
+    # the received file content along with some connection parameters
     def make_request(self):
         connection = http.client.HTTPConnection(self.server + ':' + str(self.port))
         
+        try:
+            # To calculate RTT get time stap before requesting
+            time_req = time.time()
+            connection.request("GET", '/' + self.file)
+            time_recv = time.time()
+        except ConnectionRefusedError:
+            print("Connection refused by the server.\n\n")
+            return
         
-        connection.request("GET", '/' + self.file)
+        # Get socket details before getting response as
+        peerName = connection.sock.getpeername()
+        socketFamily = connection.sock.family
+        socketType  = connection.sock.type
+        socketProtocol = connection.sock.proto
+        
         response = connection.getresponse()
         
+        print("------------------ Received ---------------------\n")
+        
+        # Display server header details
+        print(response.headers)
+        
+        # Display http version
+        if response.version == 10:
+            print('HTTP/1.0 ')
+elif response.version == 11:
+    print('HTTP/1.1 ')
+        
+        # Display http status code
+        if response.code == 200:
+            print('200 OK\n\n')
+    elif response.code == 404:
+        print('404 NOT FOUND\n\n')
+        
+        # Display received file content
+        print(response.read().decode('utf-8') + '\n')
+        
+        # Display server parameters
+        print("RTT: %s\n" % str(time_recv - time_req) +
+              "Host Name: %s\n" % connection.host +
+              "Server Port Number: %s\n" % connection.port +
+              "Peer Name: " + str(peerName) + '\n' +
+              "Socket Family: " + str(socketFamily) + '\n' +
+              "Socket Type: " + str(socketType) + '\n' +
+              "Socket Protocol: " + str(socketProtocol) + '\n\n'
+              )
+            
+              print("-------------------- Done -----------------------\n")
+              
+              
         connection.close()
-
-
 
 if __name__ == '__main__':
     project = ProjectRequirements()
@@ -84,3 +131,5 @@ if __name__ == '__main__':
     
     client = HttpClient(project.SERVER, project.PORT, project.FILE)
     client.make_request()
+
+
