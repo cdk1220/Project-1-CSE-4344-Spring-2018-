@@ -27,5 +27,31 @@ class ProjectRequirements():
                 print("Given port number not acceptable. Using port 8080\n")
         else:
             print("Port number not provided by user. Using 8080 for port.\n")
+
+class RequestHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        print(urlparse(self.path))
+        self.send_response(200)
+        self.end_headers()
+        message =  threading.currentThread().getName()
+        self.wfile.write(message.encode('utf-8'))
+        self.wfile.write('\n'.encode('utf-8'))
+        return
+
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    """Handle requests in a separate thread."""
+
+
+if __name__ == '__main__':
+    project = ProjectRequirements()
+    project.initiation()
+    
+    try:
+        httpServer = ThreadedHTTPServer((project.HOST, project.PORT), RequestHandler)
+        print('Starting server ....\n')
+        httpServer.serve_forever()
+    except KeyboardInterrupt:
+        httpServer.server_close()
             
     
