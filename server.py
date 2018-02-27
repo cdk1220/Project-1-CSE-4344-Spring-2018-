@@ -42,9 +42,14 @@ def file_exists(filename):
             # If path has no elements, path name is not valid
             if paths == []:
                 return None
-            # Else, return the first element
+            # Else, check to see if folder or file and then return
             else:
-                return paths[0]
+                for name in paths:
+                    if os.path.isfile(name):
+                        print(name)
+                        return name
+                
+                return None
 
 class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
