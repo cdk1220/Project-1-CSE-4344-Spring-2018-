@@ -54,3 +54,33 @@ class ProjectRequirements():
                     # Assigns the path given by the user
                     def check_file(self, file):
                         self.FILE = file
+
+
+# -----------------------------------------------------------------------
+# Creates an http client that listens to given port number on localserver
+# -----------------------------------------------------------------------
+class HttpClient():
+    # Following method instantiates the class
+    def __init__(self, server_name, port_number, file_name):
+        self.server = server_name
+        self.port = port_number
+        self.file = file_name
+    
+    # Following method creates the http request
+    def make_request(self):
+        connection = http.client.HTTPConnection(self.server + ':' + str(self.port))
+        
+        
+        connection.request("GET", '/' + self.file)
+        response = connection.getresponse()
+        
+        connection.close()
+
+
+
+if __name__ == '__main__':
+    project = ProjectRequirements()
+    project.initiation()
+    
+    client = HttpClient(project.SERVER, project.PORT, project.FILE)
+    client.make_request()
