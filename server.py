@@ -14,11 +14,12 @@ import glob
 import os
 
 class ProjectRequirements():
-    HOST = "127.0.0.1"        # Listening to local server
-    PORT = 8080               # Listening to 8080 by default
+    HOST = "127.0.0.1"                  # Listening to local server
+    PORT = 8080                         # Listening to 8080 by default
     
-    PATH_INDEX = 2
+    PATH_INDEX = 2                      #
     DEFAULT_FILE = "./test.htm"
+    ERROR_FILE = "./error.htm"
     
     def initiation(self):
         # Checking if user has provided the script with a desired port number
@@ -41,28 +42,29 @@ def file_exists(filename):
             
             # If path has no elements, path name is not valid
             if paths == []:
-                return None
+                return ProjectRequirements.ERROR_FILE
             # Else, check to see if folder or file and then return
             else:
                 for name in paths:
                     if os.path.isfile(name):
-                        print(name)
                         return name
                 
-                return None
+                return ProjectRequirements.ERROR_FILE
 
 class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         filepath = ProjectRequirements.file_exists(urlparse(self.path)[ProjectRequirements.PATH_INDEX])
         
-        if filepath == None:
+        if filepath == ProjectRequirements.ERROR_FILE:
             self.send_response(404)
             self.end_headers()
+            with open(filepath, 'rb') as fUploadFile:
+                uploadFile = fUploadFile.read()
+                self.wfile.write(uploadFile)
         else:
             self.send_response(200)
             self.end_headers()
             with open(filepath, 'rb') as fUploadFile:
-                print("successful")
                 uploadFile = fUploadFile.read()
                 self.wfile.write(uploadFile)
 
