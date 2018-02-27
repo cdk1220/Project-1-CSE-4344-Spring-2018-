@@ -16,7 +16,10 @@ import os
 class ProjectRequirements():
     HOST = "127.0.0.1"        # Listening to local server
     PORT = 8080               # Listening to 8080 by default
-
+    
+    PATH_INDEX = 2
+    DEFAULT_FILE = "./test.htm"
+    
     def initiation(self):
         # Checking if user has provided the script with a desired port number
         if len(sys.argv) > 1:
@@ -28,15 +31,37 @@ class ProjectRequirements():
         else:
             print("Port number not provided by user. Using 8080 for port.\n")
 
+def file_exists(filename):
+    # If the filename is '/'
+    if filename == '/':
+        return ProjectRequirements.DEFAULT_FILE
+        # Check if the path is valid
+        else:
+            paths = glob.glob("." + filename)
+            
+            # If path has no elements, path name is not valid
+            if paths == []:
+                return None
+            # Else, return the first element
+            else:
+                return paths[0]
+
 class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
-        print(urlparse(self.path))
-        self.send_response(200)
-        self.end_headers()
-        message =  threading.currentThread().getName()
-        self.wfile.write(message.encode('utf-8'))
-        self.wfile.write('\n'.encode('utf-8'))
-        return
+        filepath = ProjectRequirements.file_exists(urlparse(self.path)[ProjectRequirements.PATH_INDEX])
+        
+        if filepath == None:
+            self.send_response(404)
+            self.end_headers()
+        else:
+            self.send_response(200)
+            self.end_headers()
+            with open(filepath, 'rb') as fUploadFile:
+                print("successful")
+                uploadFile = fUploadFile.read()
+                self.wfile.write(uploadFile)
+
+    return
 
 
 class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
