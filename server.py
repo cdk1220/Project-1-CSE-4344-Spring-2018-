@@ -22,7 +22,6 @@ class ProjectRequirements():
     PORT = 8080                         # Listening to 8080 by default
     PATH_INDEX = 2                      # Url parsing will return a list whose #2 is the path
     DEFAULT_FILE = "./test.htm"         # Name of the file sent in the default case
-    ERROR_FILE = "./error.htm"          # Name of the file sent with a 404 response
 
     # This function checks to see if the user provided the script with a port number
     def initiation(self):
@@ -47,11 +46,12 @@ class ProjectRequirements():
         
         # Check if the path is valid
         else:
+            
             paths = glob.glob("." + filename)
- 
+
             # If path has no elements, path name is not valid
             if paths == []:
-                return ProjectRequirements.ERROR_FILE
+                return None
             
             # Else, check to see if folder or file and then return
             else:
@@ -62,7 +62,7 @@ class ProjectRequirements():
                         return name
 
                 # If no such file found return the error file
-                return ProjectRequirements.ERROR_FILE
+                return None
 
 # ---------------------------------------------------
 # This class handles incoming get requests by clients
@@ -79,17 +79,13 @@ class RequestHandler(BaseHTTPRequestHandler):
               "Socket Protocol: " + str(self.connection.proto) + '\n' +
               "Socket Address: " + str(self.connection.getsockname()) + '\n')
         
-        filepath = ProjectRequirements.file_exists(urlparse(self.path)[ProjectRequirements.PATH_INDEX])
-        
+        filepath = ProjectRequirements.file_exists(self.path)
+
         # File requested doesn't exit
-        if filepath == ProjectRequirements.ERROR_FILE:
+        if filepath is None:
             self.send_response(404)
             self.end_headers()
-        
-            # Important to open as 'rb'. Otherwise will have to encode the final result
-            with open(filepath, 'rb') as fUploadFile: 
-                uploadFile = fUploadFile.read()
-                self.wfile.write(uploadFile)
+
         # File exists
         else:
             self.send_response(200)
@@ -101,7 +97,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 self.wfile.write(uploadFile)
 
         print("\n-------------------- Done Processing -----------------------\n\n") 
-        
+
         return
 
 # -------------------------------------------------------
