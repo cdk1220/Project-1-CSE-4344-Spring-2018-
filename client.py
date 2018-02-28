@@ -95,7 +95,7 @@ class HttpClient():
             print("Remote end closed without response.\n\n")
             return
         
-        print("------------------ Received ---------------------\n")
+        print("\n------------------ Received ---------------------\n")
         
         # Display server header details
         print(response.headers)
