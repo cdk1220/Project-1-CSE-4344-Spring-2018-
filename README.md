@@ -29,15 +29,14 @@ How to run server.py
 
 ```
 python3 server.py [<port_number>]
-
-<port_number> - Optional. Upon not specifiying this, server will use 8080.
 ```
+<port_number> - Optional. Upon not specifiying this, server will use 8080.
 
 How to run client.py
 
 ```
 python3 client_code_name [<server_IPaddress/name>] [<port_number>] [<requested_file_name>]
-
+```
 <server_IPaddress/name> - Optional. If provided, has to be 'localhost' or '127.0.0.1.' Upon not specifiying this, client will use '127.0.0.1.'
 
 <port_number> - Optional. Upon not specifiying this, client will use 8080.
@@ -45,16 +44,15 @@ python3 client_code_name [<server_IPaddress/name>] [<port_number>] [<requested_f
 <requested_file_name> - Optional. Upon not specifying, server will respond with a default html file.
 
 
---- Important ---
+## Important
 Arguments have to be provided in the order specified above. For example, you cannot omit <server_IPaddress/name> and have <port_number> as the first argument.
-```
+
 
 
 * **Don Kuruppu**
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* https://pymotw.com/2/BaseHTTPServer/index.html#module-BaseHTTPServer
+
 
