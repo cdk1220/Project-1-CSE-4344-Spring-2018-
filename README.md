@@ -45,10 +45,10 @@ python3 client_code_name [<server_IPaddress/name>] [<port_number>] [<requested_f
 
 
 ## Important
-Arguments have to be provided in the order specified above. For example, you cannot omit <server_IPaddress/name> and have <port_number> as the first argument.
+Arguments have to be provided in the order specified above. For example, for the client script, you cannot omit <server_IPaddress/name> and have <port_number> as the first argument.
 
 
-
+## Authors
 * **Don Kuruppu**
 
 ## Acknowledgments
